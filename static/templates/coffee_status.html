@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ static_url("css/coffee_status.css") }}">
+
+  	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+	<title>Coffee Status</title>
+</head>
+<body>
+
+<div class="intro">
+	<h1><span id="message"></span></h1>
+</div>
+
+<div class="coffee">
+	<span class="steam"></span>
+		<div class="coffee-bg-lid"></div>
+		<div class="coffee-rim"></div>
+		<div class="coffee-rim-bt"></div>
+		<div class="coffee-color"></div>
+		<div class="coffee-cup"></div>
+		<div class="coffee-shadow"></div>
+</div>
+
+  <script>
+    var ws = new WebSocket('ws://localhost:8888/ws');
+    var $message = $('#message');
+    ws.onopen = function(){
+      $message.attr("class", 'label label-success');
+      $message.text('open');
+    };
+    ws.onmessage = function(msg){
+      $message.attr("class", 'label label-info');
+      $message.hide();
+      $message.fadeIn("slow");
+      $message.text(msg.data);
+    };
+    ws.onclose = function(msg){
+      $message.attr("class", 'label label-important');
+      $message.text('closed');
+    };
+    ws.onerror = function(msg){
+      $message.attr("class", 'label label-warning');
+      $message.text('error occurred');
+    };
+  </script>
+
+</body>
+</html>
