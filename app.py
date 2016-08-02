@@ -3,6 +3,7 @@ import os
 import datetime, random
 from tornado import ioloop, web, websocket, gen
 from tornado.ioloop import IOLoop
+import serial
 
 from weight_translator import CoffeeWeightToStatusTranslator
 
@@ -26,9 +27,9 @@ def auto_loop():
     translator = CoffeeWeightToStatusTranslator()
 
     while True:
-
-        weight = random.randrange(100, 200, 1)
-        status = translator.translate(weight)
+        s = serial.Serial(port='/dev/tty.usbmodem1411', baudrate=9600)
+        weight = float(s.readline()) #random.randrange(100, 200, 1)
+        status = int(translator.translate(weight))
         for c in cl:
             c.write_message('Current coffee status: ' + str(status) + '%')
 
